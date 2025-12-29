@@ -35,12 +35,12 @@ export class LoggerModule {
         PinoLoggerModule.forRootAsync({
           imports: [ConfigModule, ContextModule],
           inject: [ConfigService, ContextService],
-          useFactory: async (config: ConfigService, contextService: ContextService) => {
+          useFactory: async (config: ConfigService, contextService: ContextService<ContextInfo>) => {
             return {
               pinoHttp: {
                 redact: [...DEFAULT_REDACTED_KEYS, ...(loggerConfig?.additionalRedactedKeys || [])],
                 mixin() {
-                  const contextInfo: ContextInfo = contextService.getContext()
+                  const contextInfo: ContextInfo | undefined = contextService.getContext()
                   if (contextInfo) {
                     const logParameters = createLogParametersFromContext(contextInfo)
                     return logParameters
