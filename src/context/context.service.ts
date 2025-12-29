@@ -11,26 +11,26 @@ The context storage data can be used to store any data that is needed for the re
 
 @Injectable()
 export class ContextService<T extends ContextInfo> {
-  private readonly asyncLocalStorage: AsyncLocalStorage<ContextData>
+  private readonly asyncLocalStorage: AsyncLocalStorage<ContextData<T>>
   private readonly logger = new Logger(ContextService.name)
 
   constructor() {
-    this.asyncLocalStorage = new AsyncLocalStorage<ContextData>()
+    this.asyncLocalStorage = new AsyncLocalStorage<ContextData<T>>()
   }
 
   /*
   Returns the context information for the current request.
   */
   getContext(): T | undefined {
-    return this.asyncLocalStorage.getStore()?.contextInfo as T | undefined
+    return this.asyncLocalStorage.getStore()?.contextInfo
   }
 
   /*
    Runs the callback method with the context information.
    Used to run a flow with new context information branching off the current context.
   */
-  runWithContext<T>(contextInfo: ContextInfo, callback: () => T): T {
-    const newContext: ContextData = {
+  runWithContext<R>(contextInfo: T, callback: () => R): R {
+    const newContext: ContextData<T> = {
       contextInfo,
       contextStorage: {},
     }
@@ -74,7 +74,7 @@ export class ContextService<T extends ContextInfo> {
   }
 }
 
-interface ContextData {
-  contextInfo: ContextInfo
+interface ContextData<T extends ContextInfo> {
+  contextInfo: T
   contextStorage: Record<string, unknown>
 }
