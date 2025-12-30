@@ -8,8 +8,7 @@ on:
 
 jobs:
   release:
-    uses: montara-io/ci_workflows/.github/workflows/release_lib.yml@main
+    uses: nest-me-up/github_actions/.github/workflows/release_lib.yml@main
     secrets:
       WORKFLOW_ACTION_TOKEN: ${{ secrets.WORKFLOW_ACTION_TOKEN }}
-      ACTION_MONITORING_SLACK: ${{ secrets.ACTION_MONITORING_SLACK }}
-      
+      MONITORING_SLACK_WEBHOOK_URL: ${{ secrets.ACTION_MONITORING_SLACK }}
