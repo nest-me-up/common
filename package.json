@@ -8,9 +8,12 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node-dev src/index.ts",
-    "test": "jest --passWithNoTests",
+    "test": "service_config='src/config/test.yml' jest --passWithNoTests --detectOpenHandles --forceExit",
+    "test:ci": "service_config='src/config/ci.yml' jest --passWithNoTests --forceExit",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write \"src/**/*.ts\""
+    "format": "prettier --write \"src/**/*.ts\"",
+    "test:component": "service_config='src/utils/config/test.yml' jest --config test/component/config/jest-component-test.json --runInBand --forceExit --detectOpenHandles",
+    "test:component-ci": "service_config='src/utils/config/ci.yml' jest --config test/component/config/jest-component-test.json --runInBand --forceExit"
   },
   "jest": {
     "moduleFileExtensions": [
