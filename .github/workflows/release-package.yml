@@ -1,0 +1,15 @@
+name: release github actions
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  release:
+    uses: montara-io/ci_workflows/.github/workflows/release_lib.yml@main
+    secrets:
+      WORKFLOW_ACTION_TOKEN: ${{ secrets.WORKFLOW_ACTION_TOKEN }}
+      ACTION_MONITORING_SLACK: ${{ secrets.ACTION_MONITORING_SLACK }}
+      
