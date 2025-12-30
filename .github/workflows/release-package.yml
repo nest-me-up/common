@@ -6,6 +6,10 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   release:
     uses: nest-me-up/github_actions/.github/workflows/release_lib.yml@main
