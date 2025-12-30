@@ -6,6 +6,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "repository": {
+    "name": "common",
     "type": "git",
     "url": "https://github.com/nest-me-up/common.git"
   },
