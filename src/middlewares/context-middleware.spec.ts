@@ -21,14 +21,14 @@ interface ExtendedContextInfo extends ContextInfo {
   other: string
 }
 let headerExtractorMiddleware: ContextMiddleware
-let contextService: ContextService<ExtendedContextInfo>
+let contextService: ContextService
 let close: () => Promise<void>
 describe('headers middleware', function () {
   beforeEach(async () => {
     const appData = await createEnvironment()
     close = appData.close
     headerExtractorMiddleware = appData.module.get<ContextMiddleware>(ContextMiddleware)
-    contextService = appData.module.get<ContextService<ExtendedContextInfo>>(ContextService<ExtendedContextInfo>)
+    contextService = appData.module.get<ContextService>(ContextService)
   })
   afterAll(async () => {
     await close()
@@ -50,7 +50,7 @@ describe('headers middleware', function () {
     }
     let contextInfo: ExtendedContextInfo | null = null
     jest.spyOn(contextService, 'runWithContext').mockImplementation((_contextInfo) => {
-      contextInfo = _contextInfo
+      contextInfo = _contextInfo as ExtendedContextInfo
     })
     headerExtractorMiddleware.use(req as unknown as Request, {} as Response, jest.fn())
     const expected: ExtendedContextInfo = {

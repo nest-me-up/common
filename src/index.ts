@@ -1,3 +1,5 @@
 export * from './context'
+export * from './errors'
+export * from './http-client'
 export * from './logger'
 export * from './middlewares'

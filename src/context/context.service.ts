@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { AsyncLocalStorage } from 'async_hooks'
-import { ContextInfo } from './context-info.dto'
+import { ContextInfo } from './context.interface'
 
 /*
 This is a service that provides a context for the request.
@@ -10,27 +10,28 @@ The context storage data can be used to store any data that is needed for the re
 */
 
 @Injectable()
-export class ContextService<T extends ContextInfo> {
-  private readonly asyncLocalStorage: AsyncLocalStorage<ContextData<T>>
+export class ContextService {
+  private readonly asyncLocalStorage: AsyncLocalStorage<ContextData>
   private readonly logger = new Logger(ContextService.name)
 
   constructor() {
-    this.asyncLocalStorage = new AsyncLocalStorage<ContextData<T>>()
+    this.asyncLocalStorage = new AsyncLocalStorage<ContextData>()
   }
 
   /*
+  /*
   Returns the context information for the current request.
   */
-  getContext(): T | undefined {
-    return this.asyncLocalStorage.getStore()?.contextInfo
+  getContext<T extends ContextInfo>(): T {
+    return (this.asyncLocalStorage.getStore()?.contextInfo as T) ?? ({} as T)
   }
 
   /*
    Runs the callback method with the context information.
    Used to run a flow with new context information branching off the current context.
   */
-  runWithContext<R>(contextInfo: T, callback: () => R): R {
-    const newContext: ContextData<T> = {
+  runWithContext<R>(contextInfo: ContextInfo, callback: () => R): R {
+    const newContext: ContextData = {
       contextInfo,
       contextStorage: {},
     }
@@ -40,7 +41,7 @@ export class ContextService<T extends ContextInfo> {
   /*
   Updates the context information for the current request.
   */
-  updateContextInfo(contextInfo: T) {
+  updateContextInfo(contextInfo: ContextInfo) {
     const currentContextData = this.asyncLocalStorage.getStore()
     if (currentContextData) {
       currentContextData.contextInfo = contextInfo
@@ -74,7 +75,7 @@ export class ContextService<T extends ContextInfo> {
   }
 }
 
-interface ContextData<T extends ContextInfo> {
-  contextInfo: T
+interface ContextData {
+  contextInfo: ContextInfo
   contextStorage: Record<string, unknown>
 }

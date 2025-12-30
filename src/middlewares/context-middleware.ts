@@ -5,17 +5,10 @@ import { IncomingHttpHeaders } from 'http'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { v4 } from 'uuid'
 import { ContextInfo, ContextService } from '../context'
+import { getContextHeaderNames } from '../http-client/http-headers.config'
 
 export interface CommonMiddlewareModuleConfig {
   headerNames: Record<keyof ContextInfo, string>
-}
-
-export const DEFAULT_HEADER_NAMES: Partial<Record<keyof ContextInfo, string>> = {
-  transactionId: 'x-transaction-id',
-  sessionId: 'x-session-id',
-  userId: 'x-user-id',
-  tenantId: 'x-tenant-id',
-  projectId: 'x-project-id',
 }
 
 /*
@@ -57,16 +50,12 @@ export class ContextMiddleware implements NestMiddleware {
   private readonly contextKeyToHeaderName: Record<string, string>
 
   constructor(
-    private readonly configService: ConfigService,
-    private readonly contextService: ContextService<ContextInfo>,
+    configService: ConfigService,
+    private readonly contextService: ContextService,
     @InjectPinoLogger(ContextMiddleware.name)
     private readonly logger: PinoLogger,
   ) {
-    const configHeaderNames = this.configService.get('context.headerNames')
-    this.contextKeyToHeaderName = {
-      ...DEFAULT_HEADER_NAMES,
-      ...configHeaderNames,
-    }
+    this.contextKeyToHeaderName = getContextHeaderNames(configService)
   }
 
   use(req: Request, _res: Response, next: NextFunction) {
