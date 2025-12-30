@@ -2,6 +2,9 @@
   "name": "@nest-me-up/common",
   "version": "0.0.2",
   "description": "Library for common NestJs components for Web or Micro Services",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
