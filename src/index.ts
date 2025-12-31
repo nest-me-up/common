@@ -1,3 +1,4 @@
+export * from './configuration'
 export * from './context'
 export * from './errors'
 export * from './http-client'
