@@ -31,6 +31,7 @@ export class LoggerModule {
   static forRoot(loggerConfig?: LoggerConfig): DynamicModule {
     return {
       module: LoggerModule,
+      global: true,
       imports: [
         PinoLoggerModule.forRootAsync({
           imports: [ConfigModule, ContextModule],
