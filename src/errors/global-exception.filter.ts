@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
-import { ErrorResponse } from './montara-global-filters'
+import { ErrorResponse } from './error-global-filters'
 
 @Catch()
 export class GloablExceptionFilter implements ExceptionFilter {

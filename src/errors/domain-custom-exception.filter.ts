@@ -1,13 +1,13 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common'
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino'
 import { DomainCustomException } from './domain-custom.exception'
+import { ErrorResponse } from './error-global-filters'
 import { DOMAIN_CUSTOM_HTTP_ERROR_CODE } from './errors.const'
-import { ErrorResponse } from './montara-global-filters'
 
 @Catch(DomainCustomException)
-export class MontaraExceptionFilter implements ExceptionFilter {
+export class DomainCustomExceptionFilter implements ExceptionFilter {
   constructor(
-    @InjectPinoLogger(MontaraExceptionFilter.name)
+    @InjectPinoLogger(DomainCustomExceptionFilter.name)
     private readonly logger: PinoLogger,
   ) {}
 
