@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { createConfigLoader } from './config-impl'
+import { createConfig } from './config-impl'
 import { ConfigModule } from './config.module'
 
 jest.mock('fs')
@@ -21,7 +21,7 @@ describe('ConfigModule', () => {
     it('should load default config only', () => {
       mockReadFileSync.mockReturnValue('app: { port: 3000 }')
 
-      const loader = createConfigLoader({
+      const loader = createConfig({
         defaultConfigFile: 'default.yml',
       })
       const config = loader()
@@ -37,7 +37,7 @@ describe('ConfigModule', () => {
         return ''
       })
 
-      const loader = createConfigLoader({
+      const loader = createConfig({
         defaultConfigFile: 'default.yml',
         configFileName: 'service.yml',
       })
