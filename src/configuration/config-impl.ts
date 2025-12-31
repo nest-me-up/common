@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { readFileSync } from 'fs'
 import yaml, { YAMLException } from 'js-yaml'
 import { merge } from 'lodash'
@@ -19,10 +20,10 @@ function handleYAMLError(error: YAMLException, configFileName: string): never {
   throw errorWithoutPII
 }
 
-function loadFile(configFileName: string): Record<string, unknown> {
+function loadFile(configFileName: string): Record<string, any> {
   try {
     const content = readFileSync(configFileName, 'utf8')
-    return yaml.load(content) as Record<string, unknown>
+    return yaml.load(content) as Record<string, any>
   } catch (error) {
     if (error instanceof YAMLException) {
       return handleYAMLError(error, configFileName)
@@ -37,7 +38,7 @@ export function createConfig(options?: ConfigModuleOptions) {
   return () => loadConfig(options)
 }
 
-export function loadConfig(options?: ConfigModuleOptions) {
+export function loadConfig(options?: ConfigModuleOptions): Record<string, any> {
   const defaultConfigFile = options?.defaultConfigFile || DEFAULT_CONFIG_PATH
   const configFileName = options?.configFileName || process.env.service_config || defaultConfigFile
 
@@ -61,10 +62,11 @@ export function getSecretlessConfigString(config: object) {
   return JSON.stringify(safeConfig)
 }
 
-function iterateOverConfigAndClean(config: Record<string, unknown>) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function iterateOverConfigAndClean(config: Record<string, any>) {
   for (const property in config) {
     if (config[property] && typeof config[property] == 'object') {
-      iterateOverConfigAndClean(config[property] as Record<string, unknown>)
+      iterateOverConfigAndClean(config[property] as Record<string, any>)
     } else {
       const propertyLC = property.toLowerCase()
       if (
