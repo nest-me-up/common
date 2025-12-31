@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { createConfig } from './config-impl'
+import { createConfig, getSecretlessConfigString } from './config-impl'
 import { ConfigModule } from './config.module'
 
 jest.mock('fs')
@@ -51,5 +51,22 @@ describe('ConfigModule', () => {
       })
       expect(mockReadFileSync).toHaveBeenCalledTimes(2)
     })
+  })
+
+  it('should get config without secrets', () => {
+    mockReadFileSync.mockImplementation((path: string) => {
+      if (path === 'default.yml') return 'app: { port: 3000, name: "base", password: "secret" }'
+      if (path === 'service.yml') return 'app: { port: 8080, password: "secret" }'
+      return ''
+    })
+
+    const loader = createConfig({
+      defaultConfigFile: 'default.yml',
+      configFileName: 'service.yml',
+    })
+    const config = loader()
+    const secretlessConfig = getSecretlessConfigString(config)
+
+    expect(secretlessConfig).toEqual('{"app":{"port":8080,"name":"base","password":"hidden"}}')
   })
 })
