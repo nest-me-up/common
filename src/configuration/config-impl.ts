@@ -33,10 +33,10 @@ function loadFile(configFileName: string): Record<string, unknown> {
   }
 }
 
-export function createConfig(options: ConfigModuleOptions) {
+export function createConfig(options?: ConfigModuleOptions) {
   return () => {
-    const defaultConfigFile = options.defaultConfigFile || DEFAULT_CONFIG_PATH
-    const configFileName = options.configFileName || process.env.service_config || defaultConfigFile
+    const defaultConfigFile = options?.defaultConfigFile || DEFAULT_CONFIG_PATH
+    const configFileName = options?.configFileName || process.env.service_config || defaultConfigFile
 
     // 1. Load default config
     const defaultConfig = loadFile(defaultConfigFile)
