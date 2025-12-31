@@ -34,21 +34,50 @@ function loadFile(configFileName: string): Record<string, unknown> {
 }
 
 export function createConfig(options?: ConfigModuleOptions) {
-  return () => {
-    const defaultConfigFile = options?.defaultConfigFile || DEFAULT_CONFIG_PATH
-    const configFileName = options?.configFileName || process.env.service_config || defaultConfigFile
+  return () => loadConfig(options)
+}
 
-    // 1. Load default config
-    const defaultConfig = loadFile(defaultConfigFile)
+export function loadConfig(options?: ConfigModuleOptions) {
+  const defaultConfigFile = options?.defaultConfigFile || DEFAULT_CONFIG_PATH
+  const configFileName = options?.configFileName || process.env.service_config || defaultConfigFile
 
-    let config
-    if (configFileName !== defaultConfigFile) {
-      const serviceConfig = loadFile(configFileName)
-      config = merge({}, defaultConfig, serviceConfig)
+  // 1. Load default config
+  const defaultConfig = loadFile(defaultConfigFile)
+
+  let config
+  if (configFileName !== defaultConfigFile) {
+    const serviceConfig = loadFile(configFileName)
+    config = merge({}, defaultConfig, serviceConfig)
+  } else {
+    config = defaultConfig
+  }
+
+  return config
+}
+
+export function getSecretlessConfigString(config: object) {
+  const safeConfig = JSON.parse(JSON.stringify(config))
+  iterateOverConfigAndClean(safeConfig)
+  return JSON.stringify(safeConfig)
+}
+
+function iterateOverConfigAndClean(config: Record<string, unknown>) {
+  for (const property in config) {
+    if (config[property] && typeof config[property] == 'object') {
+      iterateOverConfigAndClean(config[property] as Record<string, unknown>)
     } else {
-      config = defaultConfig
+      const propertyLC = property.toLowerCase()
+      if (
+        propertyLC.includes('password') ||
+        propertyLC.includes('pw') ||
+        propertyLC.includes('token') ||
+        propertyLC.includes('accesstoken') ||
+        propertyLC.includes('username') ||
+        propertyLC.includes('key') ||
+        propertyLC.includes('secret')
+      ) {
+        config[property] = 'hidden'
+      }
     }
-
-    return config
   }
 }
