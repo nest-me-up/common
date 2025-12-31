@@ -8,6 +8,6 @@ permissions:
   actions: read
 jobs:
   pr_validation:
-    uses: montara-io/ci_workflows/.github/workflows/pr.yml@main
+    uses: nest-me-up/github_actions/.github/workflows/pr.yml@main
     secrets:
       WORKFLOW_ACTION_TOKEN: ${{ secrets.WORKFLOW_ACTION_TOKEN }}
