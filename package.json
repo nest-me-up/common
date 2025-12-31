@@ -1,6 +1,6 @@
 {
   "name": "@nest-me-up/common",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "Library for common NestJs components for Web or Micro Services",
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
