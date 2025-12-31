@@ -1,6 +1,6 @@
 import { DynamicModule, Global, Module } from '@nestjs/common'
 import { ConfigModule as NestConfigModule } from '@nestjs/config'
-import { createConfigLoader, DEFAULT_CONFIG_PATH } from './config-impl'
+import { createConfig, DEFAULT_CONFIG_PATH } from './config-impl'
 import { ConfigModuleOptions } from './config.options'
 /*
 This is a custom implementation of the standard NestJS ConfigModule (from @nestjs/config).
@@ -60,7 +60,7 @@ export class ConfigModule {
       module: ConfigModule,
       imports: [
         NestConfigModule.forRoot({
-          load: [createConfigLoader(options)],
+          load: [createConfig(options)],
           isGlobal: true,
         }),
       ],
