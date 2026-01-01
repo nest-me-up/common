@@ -99,6 +99,7 @@ Provides the foundation for request-scoped data.
   - `transactionId` (string): Trace ID spanning multiple microservices.
   - `internalTransactionId` (optional): Unique ID for the current service execution.
   - `sessionId` (optional): ID of the user session.
+- **Global Access:** available globally once imported.
 
 ### 2. Configuration Module
 
@@ -115,6 +116,7 @@ A pre-configured wrapper around `nestjs-pino`.
 - **Context-Aware:** Automatically adds context data such as `transactionId`, `sessionId`, etc., to every log line.
 - **Security:** Built-in redaction for sensitive keys and URL tokens (e.g., removing tokens from logged URLs).
 - **Formatting:** Configures truncation for long messages and supports pretty-printing in local development.
+- **Global Access:** available globally once imported.
 
 ### 4. Http Client Module
 
@@ -183,6 +185,8 @@ import { ConfigModule, LoggerModule, ContextModule } from 'nest-me-up-common'
 })
 export class AppModule {}
 ```
+
+Most modules are globaly accessible so you dont need to include them in the import section of your modules.
 
 ## Example Application
 
