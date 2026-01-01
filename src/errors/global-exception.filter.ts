@@ -9,24 +9,29 @@ export class GloablExceptionFilter implements ExceptionFilter {
     private readonly logger: PinoLogger,
   ) {}
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  catch(exception: any, host: ArgumentsHost) {
     const ctx = host.switchToHttp()
     const response = ctx.getResponse()
 
     const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const message = (exception as any)?.message
+    let data = undefined
+    const message = exception?.message || 'Unknown error'
     if (statusCode < HttpStatus.BAD_REQUEST || statusCode >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(exception, `Uncaught exception occurred: message: %s`, message)
     } else {
+      data = exception?.response?.message || exception?.response?.data
       this.logger.warn(exception, `Uncaught exception occurred in the 4xx range, message: %s`, message)
     }
 
     const errorResponse: ErrorResponse = {
       statusCode: statusCode,
       domainStatusCode: -1,
-      message: process.env.NODE_ENV === 'prod' ? 'Internal server error' : message,
+      message:
+        process.env.NODE_ENV === 'local' || statusCode === HttpStatus.BAD_REQUEST ? message : 'Internal server error',
       timestamp: new Date().toISOString(),
+      data: data,
     }
 
     response.status(statusCode).json(errorResponse)
