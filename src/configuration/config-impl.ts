@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ConfigObject } from '@nestjs/config'
 import { readFileSync } from 'fs'
 import yaml, { YAMLException } from 'js-yaml'
 import { merge } from 'lodash'
@@ -20,10 +21,10 @@ function handleYAMLError(error: YAMLException, configFileName: string): never {
   throw errorWithoutPII
 }
 
-function loadFile(configFileName: string): Record<string, any> {
+function loadFile(configFileName: string): ConfigObject {
   try {
     const content = readFileSync(configFileName, 'utf8')
-    return yaml.load(content) as Record<string, any>
+    return yaml.load(content) as ConfigObject
   } catch (error) {
     if (error instanceof YAMLException) {
       return handleYAMLError(error, configFileName)
@@ -38,7 +39,7 @@ export function createConfig(options?: ConfigModuleOptions) {
   return () => loadConfig(options)
 }
 
-export function loadConfig(options?: ConfigModuleOptions): Record<string, any> {
+export function loadConfig(options?: ConfigModuleOptions): ConfigObject {
   const defaultConfigFile = options?.defaultConfigFile || DEFAULT_CONFIG_PATH
   const configFileName = options?.configFileName || process.env.service_config || defaultConfigFile
 
@@ -63,10 +64,10 @@ export function getSecretlessConfigString(config: object) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function iterateOverConfigAndClean(config: Record<string, any>) {
+function iterateOverConfigAndClean(config: ConfigObject) {
   for (const property in config) {
     if (config[property] && typeof config[property] == 'object') {
-      iterateOverConfigAndClean(config[property] as Record<string, any>)
+      iterateOverConfigAndClean(config[property])
     } else {
       const propertyLC = property.toLowerCase()
       if (
