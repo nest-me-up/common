@@ -53,16 +53,16 @@ export class ContextService {
   /*
   Returns the context storage data for the current request.
   */
-  getContextStorageData(dataName: string): unknown {
+  getContextStorageData<T>(dataName: string): T {
     const currentContext = this.asyncLocalStorage.getStore()
-    return currentContext?.contextStorage?.[dataName]
+    return currentContext?.contextStorage?.[dataName] as T
   }
 
   /*
   Updates the context storage data for the current request.
   Used to store any data that is needed for the request lifecycle.
   */
-  updateContextStorageData(dataName: string, data: unknown) {
+  updateContextStorageData<T>(dataName: string, data: T) {
     const currentContext = this.asyncLocalStorage.getStore()
     if (currentContext) {
       if (!currentContext.contextStorage) {
